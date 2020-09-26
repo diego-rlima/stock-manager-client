@@ -1,86 +1,69 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+  <v-app>
     <v-app-bar
-      :clipped-left="clipped"
-      fixed
       app
+      color="white"
+      light
+      :fixed="fixed"
+      elevate-on-scroll
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
+        v-for="(item, n) in items"
+        :key="n"
+        :to="item.to"
+        text
       >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+        {{ item.title }}
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>mdi-minus</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
+
       <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
+
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
+
+      <v-spacer />
+
+      <v-menu
+        bottom
+        offset-y
       >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-avatar size="36">
+              <img
+                :src="user.avatar"
+                :alt="user.name"
+              >
+            </v-avatar>
+          </v-btn>
+        </template>
+
+        <v-list light>
+          <v-list-item
+            v-for="(item, n) in userMenu"
+            :key="n"
+            @click="() => {}"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
+
     <v-main>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+
+    <ErrorMessage />
+    <SuccessMessage />
+
     <v-footer
-      :absolute="!fixed"
+      absolute
       app
     >
       <span>&copy; {{ new Date().getFullYear() }}</span>
@@ -89,28 +72,36 @@
 </template>
 
 <script>
+import ErrorMessage from '~/components/messages/Error'
+import SuccessMessage from '~/components/messages/Success'
+
 export default {
+  components: {
+    ErrorMessage,
+    SuccessMessage
+  },
   data () {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
+      fixed: true,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
+          title: 'Products',
           to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      user: {
+        name: 'John',
+        avatar: 'https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&h=40&q=80'
+      },
+      userMenu: [
+        {
+          title: 'My account'
+        },
+        {
+          title: 'Log out'
+        }
+      ],
+      title: 'Stock Manager'
     }
   }
 }
