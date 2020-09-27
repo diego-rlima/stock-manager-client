@@ -57,6 +57,18 @@
         mdi-delete
       </v-icon>
     </template>
+
+    <template v-slot:footer>
+      <v-btn
+        v-if="totalSelected > 0"
+        absolute
+        text
+        class="mt-3 ml-2"
+        @click="selected = []"
+      >
+        Clear selected ({{ totalSelected }})
+      </v-btn>
+    </template>
   </v-data-table>
 </template>
 
@@ -108,6 +120,11 @@ export default {
       ]
     }
   },
+  computed: {
+    totalSelected () {
+      return this.selected.length
+    }
+  },
   watch: {
     search () {
       this.getDataFromApi()
@@ -117,6 +134,9 @@ export default {
         this.getDataFromApi()
       },
       deep: true
+    },
+    selected () {
+      this.emitSelected()
     }
   },
   mounted () {
@@ -173,6 +193,9 @@ export default {
     },
     showStockList (item) {
       this.$router.push(`/stock/${item.id}`)
+    },
+    emitSelected () {
+      this.$emit('selected', this.selected)
     }
   }
 }

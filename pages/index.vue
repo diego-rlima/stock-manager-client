@@ -5,6 +5,7 @@
         @createProduct="createProduct"
         @editProduct="editProduct"
         @removeProduct="removeProduct"
+        @selected="updateSelected"
       />
     </v-card>
 
@@ -39,6 +40,36 @@
       @removed="productRemoved"
       @cancel="cancelActions"
     />
+
+    <div v-if="hasSelected">
+      <v-fab-transition>
+        <v-btn
+          fab
+          large
+          dark
+          bottom
+          left
+          fixed
+          color="primary"
+          @click="updatingMultiple = !updatingMultiple"
+        >
+          <v-badge
+            color="pink"
+            :content="selectedTotal"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-badge>
+        </v-btn>
+      </v-fab-transition>
+
+      <UpdateMultiple
+        v-if="updatingMultiple"
+        :key="selectedTotal"
+        :products="selectedProducts"
+        @cancel="updatingMultiple = false"
+        @created="updateKey"
+      />
+    </div>
   </div>
 </template>
 
@@ -47,13 +78,15 @@ import ProductsList from '~/components/products/List'
 import CreateProduct from '~/components/products/CreateProduct'
 import EditProduct from '~/components/products/EditProduct'
 import RemoveProduct from '~/components/products/RemoveProduct'
+import UpdateMultiple from '~/components/products/stock/UpdateMultiple'
 
 export default {
   components: {
     ProductsList,
     CreateProduct,
     EditProduct,
-    RemoveProduct
+    RemoveProduct,
+    UpdateMultiple
   },
   data () {
     return {
@@ -61,7 +94,17 @@ export default {
       creating: false,
       editing: false,
       removing: false,
-      productId: null
+      updatingMultiple: false,
+      productId: null,
+      selectedProducts: []
+    }
+  },
+  computed: {
+    selectedTotal () {
+      return this.selectedProducts.length
+    },
+    hasSelected () {
+      return this.selectedTotal > 0
     }
   },
   methods: {
@@ -93,6 +136,11 @@ export default {
     cancelActions () {
       this.creating = false
       this.editing = false
+    },
+    updateSelected (products) {
+      // eslint-disable-next-line no-console
+      console.log(products)
+      this.selectedProducts = products
     },
     updateKey () {
       this.pageKey++
