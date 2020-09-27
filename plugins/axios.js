@@ -17,7 +17,7 @@ const showErrorMessage = (error, store) => {
 
   store.commit('messages/setError', message)
 
-  return error
+  return Promise.reject(error)
 }
 
 export default function ({ $axios, store }) {
