@@ -32,6 +32,7 @@
         color="primary"
         dark
         class="mb-2"
+        @click="createProduct"
       >
         New Product
       </v-btn>
@@ -83,6 +84,9 @@ export default {
       if (this.searching) {
         this.emitSearch()
       }
+    },
+    createProduct () {
+      this.$emit('createProduct')
     }
   }
 }

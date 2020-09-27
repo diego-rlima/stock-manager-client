@@ -12,7 +12,7 @@
     class="elevation-1"
   >
     <template v-slot:top>
-      <ListHeader @submit="searchSubmitted" />
+      <ListHeader @submit="searchSubmitted" @createProduct="createProduct" />
     </template>
     <template v-slot:item.in_stock="{ item }">
       <span :class="getQtyClass(item)">{{ item.in_stock }}</span>
@@ -39,13 +39,13 @@
       <v-icon
         small
         class="mr-2"
-        @click="editItem(item)"
+        @click="editProduct(item)"
       >
         mdi-pencil
       </v-icon>
       <v-icon
         small
-        @click="deleteItem(item)"
+        @click="removeProduct(item)"
       >
         mdi-delete
       </v-icon>
@@ -148,16 +148,17 @@ export default {
 
       return ''
     },
-    editItem (item) {
-      // eslint-disable-next-line no-console
-      console.log(item)
+    editProduct (item) {
+      this.$emit('editProduct', item.id)
     },
-    deleteItem (item) {
-      // eslint-disable-next-line no-console
-      console.log(item)
+    removeProduct (item) {
+      this.$emit('removeProduct', item.id)
     },
     searchSubmitted (value) {
       this.search = value
+    },
+    createProduct () {
+      this.$emit('createProduct')
     }
   }
 }
