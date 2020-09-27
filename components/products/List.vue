@@ -45,6 +45,13 @@
       </v-icon>
       <v-icon
         small
+        class="mr-2"
+        @click="showStockList(item)"
+      >
+        mdi-view-list-outline
+      </v-icon>
+      <v-icon
+        small
         @click="removeProduct(item)"
       >
         mdi-delete
@@ -77,6 +84,10 @@ export default {
           text: 'Title',
           align: 'start',
           value: 'title'
+        },
+        {
+          text: 'SKU',
+          value: 'sku'
         },
         {
           text: 'Qty',
@@ -159,6 +170,9 @@ export default {
     },
     createProduct () {
       this.$emit('createProduct')
+    },
+    showStockList (item) {
+      this.$router.push(`/stock/${item.id}`)
     }
   }
 }
